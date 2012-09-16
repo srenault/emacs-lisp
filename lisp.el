@@ -46,4 +46,21 @@
       (save-excursion
         (insert-buffer-substring oldbuf start end)))))
 
+(defun insert-buffer (buffer)
+  "doc..."
+  (interactive "*bInsert buffer: ") ; * warning read only buffer / b must be an existing buffer
+  (or (bufferp buffer) ;if buffer is actually a real buffer, not the name of the buffer.
+      (setq buffer (get-buffer buffer))) ;if it's the name, get buffer by name.
+  (let (start end newmark)
+    (save-excursion
+      (save-excursion
+        (set-buffer buffer)
+        (setq start (point-min) end (point-max)))
+      (insert-buffer-substring buffer start end)
+      (setq newmark (point)))
+    (push-mark newmark)))
 
+; or can take any number of arguments. It returns the value of the first arg that is not nil.
+
+(car '(1 2 3 4)) ; the head of the list
+(cdr '(1 2 3 4)) ; the rest of the list
