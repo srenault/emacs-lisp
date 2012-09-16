@@ -1,0 +1,6 @@
+(defun begin ()
+  "doc..."
+  (push-mark) ;set mark at current position
+  (goto-char (point-min)))
+
+(begin)
