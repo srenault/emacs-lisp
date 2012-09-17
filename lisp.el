@@ -62,5 +62,56 @@
 
 ; or can take any number of arguments. It returns the value of the first arg that is not nil.
 
-(car '(1 2 3 4)) ; the head of the list
+(defun begin-full-buffer (&optional arg)
+  "doc..."
+  (interactive "P"); the arg is a raw arg not a numeric number. It is a prefix arg.
+  (or (consp arg)
+      (and transient-mark-mode mark-active)
+      (push-mark))
+  (let ((size (- (point-max) (point-min))))
+    (goto-char (if (and arg (not (consp arg)))
+                   (+ (point-min)
+                      (if(size > 10000)
+                          (* (prefix-numeric-value arg) ;convert raw arg to numeric arg
+                             (/ size 10))
+                          (/ (+ 10 (* size (prefix-numeric-value arg)))
+                           10)))
+                 (point-min))))
+  (if arg (forwark-line1)))
+
+(save-restriction
+  body...) ;recover narrowing after the execution of the body.
+
+(defun what-line ()
+  "doc..."
+  (interactive)
+  (save-restriction
+    (widen) ;undoes any narrowing in the buffer
+    (save-excursion
+      (beginning-of-line)
+      (message "Line %d"
+               (+1 (count-lines 1 (point)))))))
+
+(car '(1 2 3 4)) ; the head of the list ; return the first element as a list.
 (cdr '(1 2 3 4)) ; the rest of the list
+(nthcdr 2 '(1 2 3 4)) ; (cdr (cdr '(1 2 3 4)))
+(cons 1 '(2 3 4 5)) ; construct a list
+(length '(1 2 3 4))
+
+(setq numbers '(1 2 3 4))
+(setcar numbers 0) ;replace 1 by 0
+numbers
+
+(setcdr numbers '(5 6 7)) ; replace the rest of the list by (5 6 7)
+numbers
+
+(defun zap-to-char (arg char)
+  "doc..."
+  (interactive "p\ncZap to char: ") ; p -> processed prefix
+                                   ; \nc -> prompt + wait for a char
+  (if (char-table-p translation-table-for-input) ; char-table-p -> caracter belongs to char table 
+      (setq char (or (aref translation-table-for-input char) char))) ; aref -> extract an element from an array
+  (kill-region (point)(progn ; call search-forward 
+                        (search-forward (char-to-string char) ; ensure that computer treats that caracter as a string
+                                         nil nil arg) ; bound the search; what it should do if the search failed; repeat count
+                         (point)))) ;return the found caracter point
